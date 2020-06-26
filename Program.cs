@@ -63,9 +63,6 @@ namespace Bank
             var filter5 = myBank.SummFilter(delegate(Account a)  { return a.Balance > 80; });
             var filter6 = myBank.Filter((a) => { return (a.Balance > 40) && (a.Balance < 80); });
 
-            var summ = from a in myBank.accounts select a.Balance;
-           // myBank.accounts.Sum(summ);
-                        
 
             foreach (var a in accounts)
             {

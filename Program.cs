@@ -16,28 +16,30 @@ namespace Bank
             {new Account() {FirstName="Oleg", Id = Guid.NewGuid()},
              new Account() {FirstName = "Gena", Id = Guid.NewGuid() },
              new Account() {FirstName = "Alex", Id = Guid.NewGuid() } };
-             var where = accounts.Where(a => a.FirstName == "Oleg"); 
-            List<string> names = new List<string>() {"Artem","Egor","Anastasia","Friend","Daria","Elena","Fridrih","Artem" }; // Лист имён
+            var where = accounts.Where(a => a.FirstName == "Oleg");
+            List<string> names = new List<string>() { "Artem", "Egor", "Anastasia", "Friend", "Daria", "Elena", "Fridrih", "Artem" }; // Лист имён
 
-            for (int i = 0; i<8; i++) //Добавляем больше имён
+            for (int i = 0; i < 8; i++) //Добавляем больше имён
             {
-                accounts.Add(new Account() {FirstName = names.ElementAt(i), Id = Guid.NewGuid() }); // Создаётся новый аккаунт с именем из листа names
+                accounts.Add(new Account() { FirstName = names.ElementAt(i), Id = Guid.NewGuid() }); // Создаётся новый аккаунт с именем из листа names
             }
 
             Random rnd = new Random();
-            foreach (var a in accounts )
-            {   
-                  a.Deposit(rnd.Next(100));
+            foreach (var a in accounts)
+            {
+                a.Deposit(rnd.Next(100));
             }
 
             foreach (var a in accounts) // рандомно делаем отрицательные счета
             {
-                int minus = rnd.Next(0, 5);
-                int minus2 = rnd.Next(3, 5);
-                for (int i = minus; i < minus2; i++)
+                int minus = rnd.Next(0, 3);
+                if (minus == 0)
                 {
-                    a.Balance *= -1; // Для изменения баланса пришлось убрать private set у Balance( Вызвать метод снятия счёта)
+                    a.Withdraw(a.Balance * 2);
+                    
                 }
+             
+
             }
 
             var myBank = new Bank.Models.Bank("Sberbank");
@@ -49,20 +51,24 @@ namespace Bank
             }
 
             var negativeaccounts = myBank.GetNegativeBalanceAccounts();
-            var filteredAccounts =  myBank.FilterByBalance(50);
-            var filter = myBank.Filter((a) => { return  a.Balance > 50; }); // лямбда (упрощенное создание делегата с методом)
+            var filteredAccounts = myBank.FilterByBalance(50);
+            var filter = myBank.Filter((a) => { return a.Balance > 50; }); // лямбда (упрощенное создание делегата с методом)
             var filter1 = myBank.Filter((a) => { return a.Balance < 0; });
 
-            
-            //  var filter1 = myBank.Filter(Condition);
-            //   var filter2 = myBank.Filter(delegate (Account a) { return a.Balance > 50; });
+
 
 
             var filter3 = myBank.SummFilter(ConditionSumm);
             var filter4 = myBank.SummFilter((a) => { return a.Balance > 80; });
-            var filter5 = myBank.SummFilter(delegate(Account a)  { return a.Balance > 80; });
+            var filter5 = myBank.SummFilter(delegate (Account a) { return a.Balance > 80; });
             var filter6 = myBank.Filter((a) => { return (a.Balance > 40) && (a.Balance < 80); });
 
+            //====================== Расширенные методы=================================//
+           // var summextention = myBank.accounts.SummExtention((f)=> f.Balance) ;
+            var filterextention = myBank.accounts.FilterExtention((f) => f.Balance > 80);
+            var prfilterextention = myBank.accounts.PredicateFilterExtention(f => f.Balance > 80);
+            //===============================Linq=============================================
+            decimal summa = myBank.accounts.Sum(a => a.Balance); // decimal Sum<TSource>(this IEnumerable<TSource> source, Func<TSource, decimal> selector);
 
             foreach (var a in accounts)
             {

@@ -18,7 +18,7 @@ namespace Bank.Models
 
         public Guid Id { get; set; }
         public string FirstName { get; set; }
-        public decimal Balance { get; set; }
+        public decimal Balance { get; private set; }
 
         public AccountStatus Status { get; private set; } 
 
